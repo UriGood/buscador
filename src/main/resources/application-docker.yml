@@ -4,23 +4,32 @@ server:
 spring:
   application:
     name: buscador
-  datasource:
-    url: jdbc:h2:mem:buscadordb;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-  jpa:
-    hibernate:
-      ddl-auto: create-drop   # en prod: validate / none
-    defer-datasource-initialization: true
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
+  data:
+    elasticsearch:
+      client:
+        rest:
+          uris: http://elasticsearch:9200
+          connection-timeout: 30s
+          socket-timeout: 60s
+      repositories:
+        enabled: true
+#  datasource:
+#    url: jdbc:h2:mem:buscadordb;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false
+#    driver-class-name: org.h2.Driver
+#    username: sa
+#    password:
+#  jpa:
+#    hibernate:
+#      ddl-auto: create-drop   # en prod: validate / none
+#    defer-datasource-initialization: true
+#    show-sql: true
+#    properties:
+#      hibernate:
+#        format_sql: true
+#  h2:
+#    console:
+#      enabled: true
+#      path: /h2-console
 
 eureka:
   client:

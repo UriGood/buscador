@@ -1,23 +1,33 @@
 package com.unir.buscador.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
-@Entity
+@Document(indexName = "items")
 public class Item {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    private String thumbnail;   // antes no existía
-    private String title;       // antes era "nombre"
-    private String description; // igual
-    private Double price;       // antes era "precio"
-    private Double rating;      // nuevo campo
-    private Integer stock;      // mantenemos por si lo ocupas en validaciones
+    @Field(type = FieldType.Keyword)
+    private String thumbnail;
+
+    @Field(type = FieldType.Text)
+    private String title;
+
+    @Field(type = FieldType.Text)
+    private String description;
+
+    @Field(type = FieldType.Double)
+    private Double price;
+
+    @Field(type = FieldType.Double)
+    private Double rating;
+
+    @Field(type = FieldType.Integer)
+    private Integer stock;
 
     public Item() {}
 
@@ -30,7 +40,8 @@ public class Item {
         this.stock = stock;
     }
 
-    public Long getId() { return id; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
     public String getThumbnail() { return thumbnail; }
     public void setThumbnail(String thumbnail) { this.thumbnail = thumbnail; }
