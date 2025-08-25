@@ -9,54 +9,33 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
 @RequestMapping("/items")
 public class ItemController {
-    //private final ItemRepository repo;
+
     private final ItemService service;
 
-
-//    public ItemController(ItemRepository repo, ItemService itemService) {
-//        this.repo = repo;
-//        this.itemService = itemService;
-//    }
 
     public ItemController(ItemService service){
         this.service = service;
     }
 
-//    @GetMapping
-//    public List<Item> all(@RequestParam(required = false) String title){
-//        if(title == null){
-//            return repo.findAll();
-//        }
-//        return repo.findByTitleContainingIgnoreCase(title);
-//    }
 
     @GetMapping
     public Iterable<Item> all(){
         return service.getAll();
     }
 
-//    @PostMapping
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public Item create(@RequestBody Item item){
-//        return repo.save(item);
-//    }
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Item create(@RequestBody Item item){
         return service.save(item);
     }
-
-//    @GetMapping("/{id}")
-//    public Item getOne(@PathVariable Long id){
-//        return repo.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Item no encontrado: " + id));
-//    }
 
     // GET /items/{id} → obtener uno por ID
     @GetMapping("/{id}")
@@ -67,22 +46,6 @@ public class ItemController {
         }
         return item;
     }
-
-
-
-
-//    @PutMapping("/{id}")
-//    public Item update(@PathVariable Long id, @RequestBody Item nuevo){
-//        return repo.findById(id).map(item -> {
-//            item.setTitle(nuevo.getTitle());
-//            item.setDescription(nuevo.getDescription());
-//            item.setPrice(nuevo.getPrice());
-//            item.setThumbnail(nuevo.getThumbnail());
-//            item.setRating(nuevo.getRating());
-//            item.setStock(nuevo.getStock());
-//            return repo.save(item);
-//        }).orElseThrow(()-> new RuntimeException("Item no encontrado" + id));
-//    }
 
     @PutMapping("/{id}")
     public Item update(@PathVariable String id, @RequestBody Item nuevo){
@@ -113,6 +76,9 @@ public class ItemController {
         if (nuevo.getStock() != null) {
             item.setStock(nuevo.getStock());
         }
+        if (nuevo.getCategory() != null && !nuevo.getCategory().isBlank()) {
+            item.setCategory(nuevo.getCategory());
+        }
         return item;
     }
 
@@ -121,11 +87,6 @@ public class ItemController {
         throw new ItemNotFoundException("Producto no encontrado con id: " + id);
     }
 
-//    @DeleteMapping("/{id}")
-//    @ResponseStatus(HttpStatus.NO_CONTENT)
-//    public void delete(@PathVariable Long id){
-//        repo.deleteById(id);
-//    }
 
     // DELETE /items/{id} → eliminar item
     @DeleteMapping("/{id}")
@@ -134,14 +95,28 @@ public class ItemController {
         service.delete(id);
     }
 
-//    @GetMapping("/search")
-//    public List<Item> search(@RequestParam("q") String keyword) {
-//        return itemService.searchItems(keyword);
-//    }
 
     @GetMapping("/search")
     public List<Item> search(@RequestParam("q") String keyword){
         return service.searchItems(keyword);
+    }
+
+    // 🔹 Full-text avanzado (multiMatch)
+    @GetMapping("/search-full-text")
+    public List<Item> searchFullText(@RequestParam("q") String query) throws IOException {
+        return service.searchFullText(query);
+    }
+
+    // 🔹 Autocomplete
+    @GetMapping("/autocomplete")
+    public List<Item> autocomplete(@RequestParam("q") String query) throws IOException {
+        return service.autocomplete(query);
+    }
+
+    // 🔹 Facets
+    @GetMapping("/facets")
+    public Map<String, Long> getFacets() throws IOException {
+        return service.getFacets();
     }
 
 }

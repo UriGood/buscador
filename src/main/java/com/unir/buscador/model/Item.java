@@ -1,10 +1,12 @@
 package com.unir.buscador.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Document(indexName = "items")
 public class Item {
 
@@ -14,10 +16,10 @@ public class Item {
     @Field(type = FieldType.Keyword)
     private String thumbnail;
 
-    @Field(type = FieldType.Text)
+    @Field(type = FieldType.Search_As_You_Type)
     private String title;
 
-    @Field(type = FieldType.Text)
+    @Field(type = FieldType.Search_As_You_Type)
     private String description;
 
     @Field(type = FieldType.Double)
@@ -29,15 +31,19 @@ public class Item {
     @Field(type = FieldType.Integer)
     private Integer stock;
 
+    @Field(type = FieldType.Search_As_You_Type)
+    private String category;
+
     public Item() {}
 
-    public Item(String thumbnail, String title, String description, Double price, Double rating, Integer stock) {
+    public Item(String thumbnail, String title, String description, Double price, Double rating, Integer stock, String category) {
         this.thumbnail = thumbnail;
         this.title = title;
         this.description = description;
         this.price = price;
         this.rating = rating;
         this.stock = stock;
+        this.category = category;
     }
 
     public String getId() { return id; }
@@ -60,4 +66,7 @@ public class Item {
 
     public Integer getStock() { return stock; }
     public void setStock(Integer stock) { this.stock = stock; }
+
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
 }

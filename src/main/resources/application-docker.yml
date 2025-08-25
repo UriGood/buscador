@@ -7,10 +7,7 @@ spring:
   data:
     elasticsearch:
       client:
-        rest:
-          uris: http://elasticsearch:9200
-          connection-timeout: 30s
-          socket-timeout: 60s
+        endpoints: http://elasticsearch:9200
       repositories:
         enabled: true
 #  datasource:
