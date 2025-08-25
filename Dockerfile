@@ -17,8 +17,5 @@ COPY --from=build /app/target/*.jar app.jar
 # Buscador expone el puerto 8081
 EXPOSE 8081
 
-# Activar el perfil docker
-ENV SPRING_PROFILES_ACTIVE=docker
-
 # Esperar a que Elasticsearch responda antes de arrancar
-ENTRYPOINT ["sh", "-c", "until curl -s http://elasticsearch:9200/_cluster/health | grep -E '\"status\":\"(yellow|green)\"'; do echo 'Esperando a cluster verde o amarillo...'; sleep 5; done; echo 'Cluster listo!'; java -jar app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]

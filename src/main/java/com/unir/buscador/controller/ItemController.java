@@ -2,17 +2,13 @@ package com.unir.buscador.controller;
 
 import com.unir.buscador.exception.ItemNotFoundException;
 import com.unir.buscador.model.Item;
-import com.unir.buscador.repository.ItemRepository;
 import com.unir.buscador.service.ItemService;
-//import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-
 
 @RestController
 @RequestMapping("/items")
@@ -20,11 +16,9 @@ public class ItemController {
 
     private final ItemService service;
 
-
-    public ItemController(ItemService service){
+    public ItemController(ItemService service) {
         this.service = service;
     }
-
 
     @GetMapping
     public Iterable<Item> all() throws IOException {
@@ -33,22 +27,21 @@ public class ItemController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Item create(@RequestBody Item item){
+    public Item create(@RequestBody Item item) throws IOException {
         return service.save(item);
     }
 
-    // GET /items/{id} → obtener uno por ID
     @GetMapping("/{id}")
-    public Item getOne(@PathVariable String id){
+    public Item getOne(@PathVariable String id) throws IOException {
         Item item = service.getById(id);
-        if (item == null){
+        if (item == null) {
             throw new ItemNotFoundException("Producto no encontrado con id: " + id);
         }
         return item;
     }
 
     @PutMapping("/{id}")
-    public Item update(@PathVariable String id, @RequestBody Item nuevo){
+    public Item update(@PathVariable String id, @RequestBody Item nuevo) throws IOException {
         Item existente = service.getById(id);
         if (existente == null) {
             throwNotFound(id);
@@ -56,7 +49,6 @@ public class ItemController {
         return service.save(updateItemFields(existente, nuevo));
     }
 
-    // Método auxiliar para copiar los campos
     private Item updateItemFields(Item item, Item nuevo) {
         if (nuevo.getTitle() != null && !nuevo.getTitle().isBlank()) {
             item.setTitle(nuevo.getTitle());
@@ -64,7 +56,7 @@ public class ItemController {
         if (nuevo.getDescription() != null && !nuevo.getDescription().isBlank()) {
             item.setDescription(nuevo.getDescription());
         }
-        if (nuevo.getPrice() != null) { // si price es objeto (ej: BigDecimal, Double, Integer)
+        if (nuevo.getPrice() != null) {
             item.setPrice(nuevo.getPrice());
         }
         if (nuevo.getThumbnail() != null && !nuevo.getThumbnail().isBlank()) {
@@ -82,41 +74,33 @@ public class ItemController {
         return item;
     }
 
-    // Lanzamos excepción clara
     private Item throwNotFound(String id) {
         throw new ItemNotFoundException("Producto no encontrado con id: " + id);
     }
 
-
-    // DELETE /items/{id} → eliminar item
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable String id){
+    public void delete(@PathVariable String id) throws IOException {
         service.delete(id);
     }
 
-
     @GetMapping("/search")
-    public List<Item> search(@RequestParam("q") String keyword){
-        return service.searchItems(keyword);
+    public List<Item> search(@RequestParam("q") String keyword) throws IOException {
+        return service.searchFullText(keyword);
     }
 
-    // 🔹 Full-text avanzado (multiMatch)
     @GetMapping("/search-full-text")
     public List<Item> searchFullText(@RequestParam("q") String query) throws IOException {
         return service.searchFullText(query);
     }
 
-    // 🔹 Autocomplete
     @GetMapping("/autocomplete")
     public List<Item> autocomplete(@RequestParam("q") String query) throws IOException {
         return service.autocomplete(query);
     }
 
-    // 🔹 Facets
     @GetMapping("/facets")
     public Map<String, Long> getFacets() throws IOException {
         return service.getFacets();
     }
-
 }

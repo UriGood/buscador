@@ -62,12 +62,6 @@
 			<optional>true</optional>
 		</dependency>
 
-		<!-- Spring Data Elasticsearch -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-elasticsearch</artifactId>
-		</dependency>
-
 		<!-- Cliente oficial Elasticsearch para consultas avanzadas -->
 		<dependency>
 			<groupId>co.elastic.clients</groupId>

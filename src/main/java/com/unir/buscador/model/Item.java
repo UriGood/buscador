@@ -1,42 +1,20 @@
 package com.unir.buscador.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-@Document(indexName = "items")
 public class Item {
 
-    @Id
     private String id;
-
-    @Field(type = FieldType.Keyword)
     private String thumbnail;
-
-    @Field(type = FieldType.Search_As_You_Type)
     private String title;
-
-    @Field(type = FieldType.Search_As_You_Type)
     private String description;
-
-    @Field(type = FieldType.Double)
     private Double price;
-
-    @Field(type = FieldType.Double)
     private Double rating;
-
-    @Field(type = FieldType.Integer)
     private Integer stock;
-
-    @Field(type = FieldType.Keyword)
     private String category;
 
     public Item() {}
 
-    public Item(String thumbnail, String title, String description, Double price, Double rating, Integer stock, String category) {
+    public Item(String thumbnail, String title, String description,
+                Double price, Double rating, Integer stock, String category) {
         this.thumbnail = thumbnail;
         this.title = title;
         this.description = description;
