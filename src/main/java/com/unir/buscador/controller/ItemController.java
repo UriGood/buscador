@@ -27,7 +27,7 @@ public class ItemController {
 
 
     @GetMapping
-    public Iterable<Item> all(){
+    public Iterable<Item> all() throws IOException {
         return service.getAll();
     }
 

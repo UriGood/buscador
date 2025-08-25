@@ -34,8 +34,23 @@ public class ItemService {
         this.esClient = esClient;
     }
 
-    public Iterable<Item> getAll(){
-        return repo.findAll();
+    public List<Item> getAll() throws IOException{
+        SearchResponse<Item> response = esClient.search(s -> s
+                        .index("items")
+                        .size(100)
+                        .query(q -> q.matchAll(m -> m)),
+                Item.class
+        );
+
+        return response.hits().hits().stream()
+                .map(hit -> {
+                    Item item = hit.source();
+                    if (item != null) {
+                        item.setId(hit.id()); // ✅ asignamos _id
+                    }
+                    return item;
+                })
+                .toList();
     }
 
     public Item save(Item item){
@@ -66,7 +81,7 @@ public class ItemService {
                                 .multiMatch(m -> m
                                         .query(query)
                                         .type(co.elastic.clients.elasticsearch._types.query_dsl.TextQueryType.BoolPrefix)
-                                        .fields("title", "description", "category")
+                                        .fields("title")
                                 )
                         )
                         .size(5),
@@ -74,7 +89,13 @@ public class ItemService {
         );
 
         return response.hits().hits().stream()
-                .map(Hit::source)
+                .map(hit -> {
+                    Item item = hit.source();
+                    if (item != null) {
+                        item.setId(hit.id()); // asignamos _id
+                    }
+                    return item;
+                })
                 .toList();
     }
 
@@ -114,7 +135,13 @@ public class ItemService {
         );
 
         return response.hits().hits().stream()
-                .map(Hit::source)
+                .map(hit -> {
+                    Item item = hit.source();
+                    if (item != null) {
+                        item.setId(hit.id()); // 🔹 asignamos el _id
+                    }
+                    return item;
+                })
                 .toList();
     }
 }

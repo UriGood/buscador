@@ -31,7 +31,7 @@ public class Item {
     @Field(type = FieldType.Integer)
     private Integer stock;
 
-    @Field(type = FieldType.Search_As_You_Type)
+    @Field(type = FieldType.Keyword)
     private String category;
 
     public Item() {}
