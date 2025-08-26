@@ -22,7 +22,7 @@ public class ItemService {
         this.esClient = esClient;
     }
 
-    // 🔹 Obtener todos los items
+    // Obtener todos los items
     public List<Item> getAll() throws IOException {
         SearchResponse<Item> response = esClient.search(s -> s
                         .index(INDEX)
@@ -42,7 +42,7 @@ public class ItemService {
                 .toList();
     }
 
-    // 🔹 Guardar o actualizar un item
+    //  Guardar o actualizar un item
     public Item save(Item item) throws IOException {
         IndexResponse response = esClient.index(i -> i
                 .index(INDEX)
@@ -55,7 +55,7 @@ public class ItemService {
         return item;
     }
 
-    // 🔹 Buscar por id
+    //  Buscar por id
     public Item getById(String id) throws IOException {
         GetResponse<Item> response = esClient.get(g -> g
                         .index("items")
@@ -70,12 +70,12 @@ public class ItemService {
         return null;
     }
 
-    // 🔹 Eliminar por id
+    //  Eliminar por id
     public void delete(String id) throws IOException {
         esClient.delete(d -> d.index(INDEX).id(id));
     }
 
-    // 🔹 Autocompletado (ejemplo: títulos que comiencen con prefijo)
+    // Autocompletado (ejemplo: títulos que comiencen con prefijo)
     public List<Item> autocomplete(String query) throws IOException {
         SearchResponse<Item> response = esClient.search(s -> s
                         .index(INDEX)
@@ -101,7 +101,7 @@ public class ItemService {
                 .toList();
     }
 
-    // 🔹 Facetas (categorías y cantidad de docs)
+    //  Facetas (categorías y cantidad de docs)
     public Map<String, Long> getFacets() throws IOException {
         var response = esClient.search(s -> s
                         .index(INDEX)
@@ -124,7 +124,7 @@ public class ItemService {
                 ));
     }
 
-    // 🔹 Búsqueda en título + descripción
+    //  Búsqueda en título + descripción
     public List<Item> searchFullText(String query) throws IOException {
         SearchResponse<Item> response = esClient.search(s -> s
                         .index(INDEX)
